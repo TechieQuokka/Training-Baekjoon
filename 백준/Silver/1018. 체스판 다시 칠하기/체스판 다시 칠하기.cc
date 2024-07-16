@@ -2,83 +2,58 @@
 
 using namespace std;
 
-unsigned int GetNumberOfRepainting (bool** board, unsigned int width, unsigned int height);
-template <typename T> T** CreateTwoDimensions (unsigned int row, unsigned int column);
+int CalculateNumberOfRepainting (bool board[51][51], int width, int height, int horizontal, int vertical);
 
 int main (int argc, char* argv[]) {
-    
-    unsigned int row = 0U, column = 0U;
-    cin >> row >> column;
-    
-    // create memory
-    bool** board = CreateTwoDimensions<bool> (row, column);
-    
-    // input
-    for (unsigned int horizontal = 0U; horizontal < row; horizontal++) {
-        for (unsigned int vertical = 0U; vertical < column; vertical++) {
-            
-            char element = 0;
-            cin >> element;
-            board[horizontal][vertical] = element == 'W';
-        }
-    }
-    
-    unsigned int result = GetNumberOfRepainting (board, row, column);
-    cout << result << endl;
-    
-    // free memory
-    for (int index = 0; index < row; index++) {
-        
-        delete[] board[index];
-    }
-    delete[] board;
-    return 0;
+	
+	int horizontal = 0, vertical = 0;
+	cin >> horizontal >> vertical;
+	
+	bool board[51][51] = { false };
+	for (int row = 0; row < horizontal; row++) {
+		for (int column = 0; column < vertical; column++) {
+			
+			char character = 0;
+			cin >> character;
+			board[row][column] = character == 'W';
+		}
+	}
+	
+	cout << CalculateNumberOfRepainting (board, horizontal, vertical, 8, 8);
+	return 0;
 }
 
-template <typename T> T** CreateTwoDimensions (unsigned int row, unsigned int column) {
-    
-    T** array = new T*[row];
-    if (array == NULL) throw array;
-    
-    for (unsigned int index = 0U; index < row; index++) {
-        
-        array[index] = new T[column];
-        if (array[index] != NULL) continue;
-        
-        for (unsigned int remove = 0U; remove < index; remove++) {
-            
-            delete[] array[index];
-        }
-        delete[] array;
-        throw array;
-    }
-    return array;
+int CountOfRepaint (bool board[51][51], int x, int y, int width, int height, bool pivot) {
+	
+	int count = 0;
+	
+	for (int row = x; row < width; row++) {
+		for (int column = y; column < height; column++) {
+			
+			count += board[row][column] == pivot;
+			pivot = !pivot;
+		}
+		pivot = !pivot;
+	}
+	
+	return count;
 }
 
-unsigned int GetNumberOfRepainting (bool** board, unsigned int width, unsigned int height) {
-    
-    if (board == NULL) throw board;
-    if (width < 8U || height < 8U) throw width, height;
-    
-    bool evert = false;
-    unsigned int numberOfRows = 8U, numberOfColumn = 8U, size = 64U, least = 4294967295U;
-    for (unsigned int row = numberOfRows - 1U; row < width; row++) {
-        for (unsigned int column = numberOfColumn - 1U; column < height; column++) {
-                
-            unsigned int count = 0U;
-            for (unsigned int horizontal = 0U; horizontal < numberOfRows; horizontal++) {
-                for (unsigned int vertical = 0U; vertical < numberOfColumn; vertical++) {
-                    
-                    bool pivot = board[(row + 1U - numberOfRows) + horizontal][(column + 1U - numberOfColumn) + vertical];
-                    count += (unsigned int) (pivot == evert);
-                    evert = (vertical == numberOfColumn - 1) ? evert : !evert;
-                }
-            }
-            
-            unsigned int temporary = (size - count);
-            count = temporary < count ? temporary : count;
-            if (count < least) least = count;
-        }
-    }
-    return least;
+int CalculateNumberOfRepainting (bool board[51][51], int width, int height, int horizontal, int vertical) {
+	
+	if (board == NULL) return 0;
+	
+	int minimum = 987654321;
+	
+	for (int row = 0; row < width - horizontal + 1; row++) {
+		for (int column = 0; column < height - vertical + 1; column++) {
+			
+			int left = CountOfRepaint (board, row, column, row + horizontal, column + vertical, true);
+			int right = CountOfRepaint (board, row, column, row + horizontal, column + vertical, false);
+			
+			minimum = min (minimum, min (left, right));
+		}
+	}
+	
+	return minimum;
 }
