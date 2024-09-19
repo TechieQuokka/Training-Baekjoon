@@ -105,26 +105,6 @@ double crossProduct(const pair<double, double>& p1, const pair<double, double>& 
     return (p3.first - p1.first) * (p2.second - p1.second) - (p3.second - p1.second) * (p2.first - p1.first);
 }
 
-int CountHull (deque<pair<double, double>>& buffer) {
-	
-	unordered_map<double, int> table;
-	for (const auto& element : buffer) {
-		
-		if (table.find(element.second) != table.end()) {
-			
-			table[element.second]++;
-		}
-		else table[element.second] = 1;
-	}
-	
-	int count = 0;
-	for (const auto& element : table) {
-		
-		if (element.second > 2) count += element.second - 2;
-	}
-	return buffer.size() - count;
-}
-
 bool checkTail (pair<double, double> p1, pair<double, double> p2, pair<double, double> p3) {
 	
 	return crossProduct (p1, p2, p3) == 0.0;
