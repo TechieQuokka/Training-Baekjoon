@@ -36,20 +36,9 @@ bool ascending (pair<double, double> element1, pair<double, double> element2) {
 	return pow(deltaX1, 2.0) + pow(deltaY1, 2.0) < pow(deltaX2, 2.0) + pow(deltaY2, 2.0);
 }
 
-void PrintVector (vector<pair<double, double>>& source) {
-	
-	for (const auto& element : source) {
-		
-		cout << "(" << element.first << ", " << element.second << ")" << endl;
-	}
-	cout << endl;
-	return;
-}
-
 pair<double, double> FindTopLeftPoint(const vector<pair<double, double>>& points);
 int ConvexHull (vector<pair<double, double>>& buffer, int length);
 
-// https://www.acmicpc.net/board/view/74331
 int main (int argc, char* argv[]) {
 	
 	ios_base :: sync_with_stdio(false);
@@ -68,9 +57,7 @@ int main (int argc, char* argv[]) {
 	}
 	
 	pivot = FindTopLeftPoint (buffer);
-	
 	sort(buffer.begin(), buffer.end(), &ascending);
-	//PrintVector (buffer);
 	
 	int result = ConvexHull (buffer, count);
 	cout << result << "\n";
@@ -117,28 +104,6 @@ double crossProduct(const pair<double, double>& p1, const pair<double, double>& 
     
     return (p3.first - p1.first) * (p2.second - p1.second) - (p3.second - p1.second) * (p2.first - p1.first);
 }
-
-void printDeque(deque<pair<double, double>> buffer) {
-	
-    while (!buffer.empty()) {
-    	
-        pair<double, double> element = buffer.back();
-        cout << "(" << element.first << ", " << element.second << ")" << endl;
-        buffer.pop_back();
-    }
-    cout << endl;
-}
-
-//9
-//1 1
-//1 2
-//1 3
-//2 1
-//2 2
-//2 3
-//3 1
-//3 2
-//4 1
 
 int CountHull (deque<pair<double, double>>& buffer) {
 	
@@ -195,8 +160,6 @@ int ConvexHull (vector<pair<double, double>>& source, int length) {
 	}
 	buffer.push_front(source[0]);
 	int minus = (int) checkTail (buffer.at(0), buffer.at(1), buffer.at(2));
-	
-	//printDeque (buffer);
 	
 	return buffer.size() - minus;
 }
