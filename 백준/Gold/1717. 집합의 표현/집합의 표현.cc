@@ -45,6 +45,9 @@ int Find (vector<int>& table, int number) {
 
 void Union (vector<int>& table, int a, int b) {
     
-    table[Find (table, a)] = Find (table, b);
+    a = Find (table, a);
+    b = Find (table, b);
+    if (a > b) table[a] = b;
+    else table[b] = a;
     return;
 }
