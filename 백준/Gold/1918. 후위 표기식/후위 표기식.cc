@@ -20,7 +20,7 @@ int main (int argc, char* argv[]) {
 
 bool IsAlphabet (char character) {
 	
-	return character >= 'A' && character <= 'Z';
+	return character >= 'A' && character <= 'Z' || character >= 'a' && character <= 'z';
 }
 
 string ToPostfix (string& infix) {
@@ -35,13 +35,16 @@ string ToPostfix (string& infix) {
 			
 			result.push_back(element);
 		}
-		else if (table.find(element) != table.end()) {
-			if (buffer.empty()) {
+		else if (table.find(element) == table.end()) {
+			while (buffer.top() != '(') {
 				
-				buffer.push (element);
-				continue;
+				result.push_back (buffer.top());
+				buffer.pop();
 			}
-			else if (element == '(') {
+			buffer.pop();
+		}
+		else {
+			if (buffer.empty() || element == '(') {
 				
 				buffer.push (element);
 				continue;
@@ -53,14 +56,6 @@ string ToPostfix (string& infix) {
 				buffer.pop();
 			}
 			buffer.push (element);
-		}
-		else {
-			while (buffer.top() != '(') {
-				
-				result.push_back (buffer.top());
-				buffer.pop();
-			}
-			buffer.pop();
 		}
 	}
 	
