@@ -27,10 +27,10 @@ int main (int argc, char* argv[]) {
     return 0;
 }
 
-int Calculate (int* source, int length, int middle, int pivot) {
+int Calculate (int* source, int length, int middle) {
 
     int index = 0, previous = source[0], count = 1;
-    for (index = 1; index < length; index++) {
+    for (index = 0; index < length; index++) {
         
         int interval = source[index] - previous;
         if (interval < middle) continue;
@@ -47,6 +47,6 @@ int FindValue (int* source, int length, int left, int right, int pivot) {
     int middle = (left + right) / 2;
     if (left > right) return middle;
     
-    if (Calculate (source, length, middle, pivot) >= pivot) return FindValue (source, length, middle + 1, right, pivot);
+    if (Calculate (source, length, middle) >= pivot) return FindValue (source, length, middle + 1, right, pivot);
     else return FindValue (source, length, left, middle - 1, pivot);
 }
