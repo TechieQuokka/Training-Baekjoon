@@ -1,53 +1,64 @@
-#include <iostream>
-#include <vector>
+#include <stdio.h>
+#include <stdbool.h>
 
-using namespace std;
+int Find (int* parent, int u);
+bool Union (int* parent, int u, int v);
 
-int Find (vector<int>& table, int number);
-void Union (vector<int>& table, int a, int b);
-
-int main(int argc, char* argv[]) 
-{
-    int number = 0, count = 0;
-    
-    cin >> number >> count;
-    
-    vector<int> table (number + 1);
-    for (int index = 0; index <= number; index++) {
-      
-        table[index] = index;
-    }
-    
-    for (int repeat = 0; repeat < count; repeat++) {
-      
-        int command = 0, a = 0, b = 0;
-        scanf ("%d%d%d", &command, &a, &b);
-        
-        if (command == 0) Union (table, a, b);
-        else {
-          
-            a = Find (table, a);
-            b = Find (table, b);
-            printf ("%s\n", a == b ? "YES" : "NO");
-        }
-    }
-    return 0;
-}
-
-int Find (vector<int>& table, int number) {
+int main (int argc, char* argv[]) {
   
-    if (number == table[number]) {
+  int number = 0, count = 0;
+  scanf ("%d%d", &number, &count);
+  
+  int parent[1000001] = { 0, };
+  for (int index = 0; index <= number; index++) {
+    
+    parent[index] = -1;
+  }
+  
+  for (int repeat = 0; repeat < count; repeat++) {
+    
+    int command = 0, u = 0, v = 0;
+    scanf ("%d%d%d", &command, &u, &v);
+    
+    if (command == 0) {
       
-        return table[number];
+      Union (parent, u, v);
     }
-    return table[number] = Find (table, table[number]);
+    else {
+      
+      u = Find (parent, u);
+      v = Find (parent, v);
+      printf ("%s\n", u == v ? "YES" : "NO");
+    }
+  }
+  
+  return 0;
 }
 
-void Union (vector<int>& table, int a, int b) {
-    
-    a = Find (table, a);
-    b = Find (table, b);
-    if (a > b) table[a] = b;
-    else table[b] = a;
-    return;
+
+int Find (int* parent, int u) {
+  
+  if (parent[u] < 0) return u;
+  return parent[u] = Find (parent, parent[u]);
+}
+
+void Swap (int* left, int* right) {
+  
+  int temp = *left;
+  *left = *right;
+  *right = temp;
+  return;
+}
+
+bool Union (int* parent, int u, int v) {
+  
+  u = Find (parent, u);
+  v = Find (parent, v);
+  
+  if (u == v) return false;
+  if (parent[u] > parent[v]) Swap (&u, &v);
+  if (parent[u] == parent[v]) parent[u]--;
+  
+  parent[v] = u;
+  return true;
 }
