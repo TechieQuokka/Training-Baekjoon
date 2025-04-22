@@ -1,35 +1,33 @@
 #include <stdio.h>
-#include <math.h>
 
-int main (int argc, char* argv[]) {
-  
-  int length = 0;
-  scanf ("%d", &length);
-  
-  int previous = 0;
-  scanf ("%d", &previous);
-  
-  int count = 0;
-  for (int index = 1; index < length; index++) {
+int main() {
+    int N;
+    scanf("%d", &N);
     
-    int current = 0;
-    scanf ("%d", &current);
+    long long prev, curr;
+    scanf("%lld", &prev);
     
-    int minus = log2(current);
-    int exponent = ceil(log2(previous));
-    exponent -= minus;
-    
-    if (exponent < 0) {
-      
-      previous = current;
-      continue;
+    long long count = 0;
+    for (int i = 1; i < N; i++) {
+        scanf("%lld", &curr);
+        
+        if (prev <= curr) {
+            prev = curr;
+        } else {
+            long long ratio = (prev + curr - 1) / curr;
+            int exponent = 0;
+            long long power = 1;
+            
+            while (power < ratio) {
+                power <<= 1;
+                exponent++;
+            }
+            
+            count += exponent;
+            prev = curr * power;
+        }
     }
     
-    previous = current * pow(2, exponent);
-    count += exponent;
-  }
-  
-  printf ("%d", count);
-  
-  return 0;
+    printf("%lld\n", count);
+    return 0;
 }
