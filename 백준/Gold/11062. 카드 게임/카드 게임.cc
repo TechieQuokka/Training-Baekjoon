@@ -4,43 +4,52 @@
 
 using namespace std;
 
-int main() {
-    int T;
-    cin >> T;
-    for (int t = 0; t < T; ++t) {
-        int N;
-        cin >> N;
-        vector<int> card(N);
-        for (int i = 0; i < N; ++i) {
-            cin >> card[i];
-        }
-        
-        // 전체 점수의 합 계산
-        int total = 0;
-        for (int i = 0; i < N; ++i) {
-            total += card[i];
-        }
-        
-        // DP 테이블 초기화
-        vector<vector<int>> dp(N, vector<int>(N, 0));
-        
-        // DP 테이블 채우기
-        for (int len = 1; len <= N; ++len) {
-            for (int i = 0; i <= N - len; ++i) {
-                int j = i + len - 1;
-                if (len == 1) {
-                    dp[i][j] = card[i];
-                } else {
-                    int choose_left = card[i] - dp[i + 1][j];
-                    int choose_right = card[j] - dp[i][j - 1];
-                    dp[i][j] = max(choose_left, choose_right);
-                }
-            }
-        }
-        
-        // 근우의 점수 계산
-        int geunwoo_score = (total + dp[0][N - 1]) / 2;
-        cout << geunwoo_score << endl;
+int solution (vector<int>& card, int length);
+
+int main (int argc, char* argv[]) {
+  
+  int testcase = 0;
+  cin >> testcase;
+  
+  for (int repeat = 0; repeat < testcase; repeat++) {
+    
+    int length = 0;
+    scanf ("%d", &length);
+    
+    vector <int> card (length);
+    for (int index = 0; index < length; index++) {
+      
+      scanf ("%d", &card[index]);
     }
-    return 0;
+    
+    printf ("%d\n", solution (card, length));
+  }
+  return 0;
+}
+
+int solution (vector<int>& card, int length) {
+  
+  int total = 0;
+  for (int index = 0; index < length; index++) {
+    
+    total += card[index];
+  }
+  
+  vector<vector<int>> table (length, vector<int> (length, 0));
+  
+  for (int size = 1; size <= length; size++) {
+    for (int row = 0; row <= length - size; row++) {
+      
+      int column = row + size - 1;
+      if (size == 1) {
+        
+        table[row][column] = card[row];
+        continue;
+      }
+      
+      table[row][column] = max (card[row] - table[row + 1][column], card[column] - table[row][column - 1]);
+    }
+  }
+  
+  return (total + table[0][length - 1]) / 2;
 }
